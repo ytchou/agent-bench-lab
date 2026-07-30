@@ -1,8 +1,9 @@
-# Step-3 run order and amendment A1 (rtk withdrawal)
+# Step-3 run order and amendments A1–A2
 
-Registered 2026-07-30, **before any main (phase 3) run**. This document does two things:
-records amendment A1 to the pre-registration, and fixes the campaign run order and
-stop rule so that any early termination is provably resource-driven, not result-driven.
+Registered 2026-07-30, **before any main (phase 3) run**. This document does three
+things: records amendments A1 and A2 to the pre-registration, and fixes the campaign
+run order and stop rule so that any early termination is provably resource-driven,
+not result-driven.
 
 ## Amendment A1 — rtk arm withdrawn from the study
 
@@ -12,7 +13,19 @@ so the withdrawal cannot be data-driven.
 
 **Reason:** rtk v0.44.1 has no Codex CLI support, making it the only asymmetric arm.
 Dropping it yields a fully symmetric 4-arm × 2-agent design (baseline, caveman,
-ponytail, Headroom) and cuts the campaign from ~1,004 to **912 runs**.
+ponytail, Headroom).
+
+## Amendment A2 — uniform k=2 replication
+
+**Decision (Patrick, 2026-07-30, pre-data):** Claude cells previously at k=1
+(comprehension + DSBench, per decision 1.8 / analysis-plan §1) move to **k=2 —
+replication is now uniform k=2 across every cell of the study**.
+
+**Reason:** the added runs are the study's cheapest (+176 runs, ~2–3 h machine time);
+uniform k removes the mixed-precision caveat, extends the reliability metrics
+(rep-flip rate, per-cell cost spread) to every cell, and insures against a
+quiet-family divergent task (warm-up found exactly one in Claude-SWE). The amendment
+only *adds* replication — statistical power can only increase.
 
 **Effects on frozen artifacts (text left intact; this amendment governs):**
 
@@ -26,17 +39,17 @@ ponytail, Headroom) and cuts the campaign from ~1,004 to **912 runs**.
   scheduled**; `versions.md` rtk pin stands as documentation of the exclusion basis.
 - `freeze.md` run plan: superseded by the totals below.
 
-## Run plan (912 runs)
+## Run plan (1,088 runs)
 
 | Tier | Content | Claude | Codex | Tier total | Cumulative |
 |---|---|---|---|---|---|
-| 1 | medium effort, 4 arms, 34 tasks | 184 | 272 | 456 | 50% |
-| 2 | xhigh effort, 4 arms, 34 tasks | 184 | 272 | 456 | 100% |
+| 1 | medium effort, 4 arms, 34 tasks | 272 | 272 | 544 | 50% |
+| 2 | xhigh effort, 4 arms, 34 tasks | 272 | 272 | 544 | 100% |
 
-Per-agent replication (frozen at prereg, unchanged): Claude k=1 except k=2 on SWE
-cells → 46 runs/arm; Codex k=2 on all cells → 68 runs/arm.
+Replication (amendment A2): **k=2 on every cell, both agents** → 68 runs/arm per
+effort. The design is fully symmetric: 2 agents × 4 arms × 2 efforts × 34 tasks × k=2.
 
-Within Tier 1, the Claude slice runs first (checkpoint 1a, 184 runs): if the campaign
+Within Tier 1, the Claude slice runs first (checkpoint 1a, 272 runs): if the campaign
 is halted after 1a, the surviving article scope is "3 tools on Claude Code at default
 effort," still a complete paired experiment.
 
