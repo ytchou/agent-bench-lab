@@ -8,12 +8,14 @@
     "--model",
     "claude-opus-5",
     "--permission-mode",
-    "bypassPermissions"
+    "bypassPermissions",
+    "--effort",
+    "medium"
   ],
   "exit_code": 0,
   "status": "ok",
   "discard_reason": null,
-  "wall_s": 75.089,
-  "session_id": "0b9b4029-c0d2-421e-82ed-77206a4ba6eb",
-  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-swebench-pallets--flask-5014-r1/0b9b4029-c0d2-421e-82ed-77206a4ba6eb.jsonl"
+  "wall_s": 84.449,
+  "session_id": "40a5c9ac-f59e-44f4-8b90-51563983f877",
+  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-swebench-pallets--flask-5014-r1/40a5c9ac-f59e-44f4-8b90-51563983f877.jsonl"
 }

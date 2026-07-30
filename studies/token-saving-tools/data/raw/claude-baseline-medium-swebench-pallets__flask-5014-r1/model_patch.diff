@@ -1,15 +1,15 @@
 diff --git a/CHANGES.rst b/CHANGES.rst
-index 498d5e5..27fde0b 100644
+index 498d5e5..8564338 100644
 --- a/CHANGES.rst
 +++ b/CHANGES.rst
-@@ -35,6 +35,7 @@ Unreleased
- -   Ensure subdomains are applied with nested blueprints. :issue:`4834`
- -   ``config.from_file`` can use ``text=False`` to indicate that the parser wants a
-     binary file instead. :issue:`4989`
-+-   A blueprint name may not be empty. :issue:`5010`
+@@ -53,6 +53,7 @@ Released 2023-02-15
+ -   Autoescape is enabled by default for ``.svg`` template files. :issue:`4831`
+ -   Fix the type of ``template_folder`` to accept ``pathlib.Path``. :issue:`4892`
+ -   Add ``--debug`` option to the ``flask run`` command. :issue:`4777`
++-   Blueprints raise ``ValueError`` if the name is empty. :issue:`5010`
  
  
- Version 2.2.4
+ Version 2.2.2
 diff --git a/src/flask/blueprints.py b/src/flask/blueprints.py
 index eb50585..8019aa4 100644
 --- a/src/flask/blueprints.py
@@ -34,26 +34,3 @@ index eb50585..8019aa4 100644
          if name in app.blueprints:
              bp_desc = "this" if app.blueprints[name] is self else "a different"
              existing_at = f" '{name}'" if self_name != name else ""
-diff --git a/tests/test_blueprints.py b/tests/test_blueprints.py
-index d46b769..44eb87c 100644
---- a/tests/test_blueprints.py
-+++ b/tests/test_blueprints.py
-@@ -256,6 +256,18 @@ def test_dotted_name_not_allowed(app, client):
-         flask.Blueprint("app.ui", __name__)
- 
- 
-+def test_empty_name_not_allowed(app, client):
-+    with pytest.raises(ValueError):
-+        flask.Blueprint("", __name__)
-+
-+
-+def test_empty_name_not_allowed_on_register(app):
-+    bp = flask.Blueprint("bp", __name__)
-+
-+    with pytest.raises(ValueError):
-+        app.register_blueprint(bp, name="")
-+
-+
- def test_dotted_names_from_app(app, client):
-     test = flask.Blueprint("test", __name__)
- 

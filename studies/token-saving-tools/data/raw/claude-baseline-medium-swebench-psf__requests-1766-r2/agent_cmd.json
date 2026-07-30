@@ -15,7 +15,7 @@
   "exit_code": 0,
   "status": "ok",
   "discard_reason": null,
-  "wall_s": 25.36,
-  "session_id": "b25746ff-dc14-4197-9e81-d02c8ff30dd3",
-  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-swebench-psf--requests-1766-r2/b25746ff-dc14-4197-9e81-d02c8ff30dd3.jsonl"
+  "wall_s": 21.724,
+  "session_id": "4fb54721-6794-4c44-b3f9-65d2583a6baa",
+  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-swebench-psf--requests-1766-r2/4fb54721-6794-4c44-b3f9-65d2583a6baa.jsonl"
 }

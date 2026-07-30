@@ -1,13 +1,42 @@
 diff --git a/sympy/core/function.py b/sympy/core/function.py
-index 1b8005e..c730d8c 100644
+index 1b8005e..239926b 100644
 --- a/sympy/core/function.py
 +++ b/sympy/core/function.py
-@@ -507,7 +507,7 @@ def _eval_evalf(self, prec):
+@@ -507,7 +507,18 @@ def _eval_evalf(self, prec):
              func = getattr(mpmath, fname)
          except (AttributeError, KeyError):
              try:
 -                return Float(self._imp_(*self.args), prec)
-+                return Float(self._imp_(*[i.evalf(prec) for i in self.args]), prec)
++                result = self._imp_(*self.args)
++            except (AttributeError, TypeError, ValueError):
++                return
++            # the implementation may return an expression that itself
++            # contains implemented functions, so evaluate it recursively
++            # (see issue 12096)
++            try:
++                result = sympify(result)
++                if isinstance(result, Expr):
++                    from mpmath.libmp.libmpf import prec_to_dps
++                    result = result.evalf(prec_to_dps(prec))
++                return Float(result, prec)
              except (AttributeError, TypeError, ValueError):
                  return
  
+diff --git a/sympy/utilities/tests/test_lambdify.py b/sympy/utilities/tests/test_lambdify.py
+index d8a1a68..835f162 100644
+--- a/sympy/utilities/tests/test_lambdify.py
++++ b/sympy/utilities/tests/test_lambdify.py
+@@ -762,6 +762,13 @@ def test_Min_Max():
+     assert lambdify((x, y, z), Min(x, y, z))(1, 2, 3) == 1
+     assert lambdify((x, y, z), Max(x, y, z))(1, 2, 3) == 3
+ 
++def test_issue_12096():
++    # evalf must be applied recursively to the result of _imp_
++    f = implemented_function('f', lambda x: x**2)
++    g = implemented_function('g', lambda x: 2*x)
++    assert f(g(2)).evalf() == 16
++
++
+ def test_Indexed():
+     # Issue #10934
+     if not numpy:

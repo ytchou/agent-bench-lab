@@ -8,12 +8,14 @@
     "--model",
     "claude-opus-5",
     "--permission-mode",
-    "bypassPermissions"
+    "bypassPermissions",
+    "--effort",
+    "medium"
   ],
   "exit_code": 0,
   "status": "ok",
   "discard_reason": null,
-  "wall_s": 66.902,
-  "session_id": "280e67c5-c376-4089-81b3-1ac4110b68fd",
-  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-dsbench-00000001-q17-r1/280e67c5-c376-4089-81b3-1ac4110b68fd.jsonl"
+  "wall_s": 67.77,
+  "session_id": "e2cb5ec1-090b-4531-92de-3dbb46a25df9",
+  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-dsbench-00000001-q17-r1/e2cb5ec1-090b-4531-92de-3dbb46a25df9.jsonl"
 }
