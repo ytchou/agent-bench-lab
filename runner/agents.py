@@ -138,6 +138,35 @@ def _glob_first(root: Path, pattern: str) -> Path | None:
     return matches[-1] if matches else None
 
 
+def _parse_result_object(stdout: str) -> dict[str, Any] | None:
+    """The CLI's JSON result object from stdout, or None.
+
+    Wrapper arms (headroom wrap) print their own banner and arg echo to stdout
+    around the CLI's result, so whole-stdout parsing rejects genuinely successful
+    runs. Accept the LAST line that parses to a JSON object — the result line is
+    the final thing the wrapped CLI writes.
+    """
+    whole = stdout.strip()
+    if not whole:
+        return None
+    try:
+        parsed = json.loads(whole)
+        return parsed if isinstance(parsed, dict) else None
+    except json.JSONDecodeError:
+        pass
+    for line in reversed(whole.splitlines()):
+        line = line.strip()
+        if not (line.startswith("{") and line.endswith("}")):
+            continue
+        try:
+            parsed = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    return None
+
+
 def run_claude(
     spec: RunSpec, cfg: StudyConfig, workspace: Path, prompt: str
 ) -> AgentResult:
@@ -169,11 +198,8 @@ def run_claude(
     env = _build_env(cfg, spec, config_dir, "CLAUDE_CONFIG_DIR")
     _execute(result, cmd, workspace, env, cfg.agent_timeout_s)
 
-    try:
-        parsed = json.loads(result["stdout"]) if result["stdout"].strip() else None
-    except json.JSONDecodeError:
-        parsed = None
-    result["parsed"] = parsed
+    result["parsed"] = _parse_result_object(result["stdout"])
+    parsed = result["parsed"]
 
     if parsed is None:
         if result["status"] == "ok":

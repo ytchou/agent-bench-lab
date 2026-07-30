@@ -186,3 +186,23 @@ def test_codex_stock_catalog_is_not_an_installed_tool(tmp_path):
 
     (home / "plugins" / "cache" / "caveman").mkdir(parents=True)
     assert installed_tools("codex", home) == ["caveman"]
+
+
+def test_wrapped_stdout_result_extraction():
+    from runner.agents import _parse_result_object
+
+    plain = '{"is_error": false, "session_id": "abc"}'
+    assert _parse_result_object(plain) == {"is_error": False, "session_id": "abc"}
+
+    banner = (
+        "  == HEADROOM WRAP: CLAUDE ==\n"
+        "  Proxy ready on http://127.0.0.1:8787\n"
+        "  Extra args: -p {not json\n"
+        + plain
+        + "\n"
+    )
+    assert _parse_result_object(banner) == {"is_error": False, "session_id": "abc"}
+
+    assert _parse_result_object("") is None
+    assert _parse_result_object("banner only, no json") is None
+    assert _parse_result_object('["a", "json", "array"]') is None
