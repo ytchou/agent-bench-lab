@@ -17,6 +17,15 @@ from runner.spec import RunSpec, RunnerError, StudyConfig
 
 BASELINE_ARM = "baseline"
 
+
+class SterilityError(RunnerError):
+    """A run was refused because its config dir or workspace is contaminated.
+
+    Its own type (not a bare RunnerError) because the batch scheduler must treat it
+    differently from every other failure: contamination is not transient, so the run is
+    never retried and the campaign stops instead of poisoning the cells after it.
+    """
+
 SKILLS_TREE = ".agents/skills"
 """Project-local skill install (npx skills add) — must only exist in a workspace after seeding."""
 
@@ -110,7 +119,7 @@ def enforce_preconditions(spec: RunSpec, cfg: StudyConfig, workspace: Path) -> N
     """Refuse a contaminated run before the agent launches, naming every offending path."""
     problems = config_problems(cfg, spec.agent, spec.arm) + workspace_problems(workspace)
     if problems:
-        raise RunnerError(
+        raise SterilityError(
             f"sterility precheck failed for {spec.run_id}:\n"
             + "\n".join(f"  - {problem}" for problem in problems)
         )
