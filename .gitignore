@@ -21,6 +21,7 @@ sandbox/
 
 # benchmark data (non-commercial license): download-script only, never vendored
 studies/*/tasks/dsbench_data/
+studies/*/tasks/.dsbench_cache/
 
 # derived from runs.jsonl by `abl db` — rebuilt on demand, never committed
 runs.sqlite
