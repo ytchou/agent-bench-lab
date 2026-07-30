@@ -31,34 +31,47 @@ arms:
   baseline: {}                      # sterile config, no suffix, no tool
   caveman:
     config_dir_suffix: "-caveman"
+    # Codex install is project-local (npx skills add): the runner seeds each fresh
+    # workspace from workspace_seed. Runner support lands with 3.0 arm plumbing.
+    workspace_seed:
+      codex: sandbox/workspace-seed-caveman-codex
     activation_signatures:
       claude:
-        - "CAVEMAN MODE ACTIVE"
-      codex: []                     # TODO: codex-side marker not identified yet
+        - "CAVEMAN MODE ACTIVE"     # verified live 2026-07-30 (SessionStart hook)
+      codex:
+        # Explicit skill invocation; catalog listing alone is availability, not use.
+        # Ceiling: agent-initiated silent skill use is missed — refine in 3.0.
+        - "$caveman"
   ponytail:
     config_dir_suffix: "-ponytail"
+    workspace_seed:
+      codex: sandbox/workspace-seed-ponytail-codex
     activation_signatures:
       claude:
-        - "Ponytail governs what you build"
-      codex: []                     # TODO
+        - "Ponytail governs what you build"   # verified live 2026-07-30
+      codex:
+        - "$ponytail"               # same ceiling as caveman
   rtk:
     config_dir_suffix: "-rtk"
+    # rtk has NO Codex CLI support (not in its --agent list, v0.44.1) — Claude-only arm.
     activation_signatures:
-      claude: []                    # TODO: identify rtk's session-log signature
-      codex: []                     # TODO
+      claude:
+        - "rtk hook claude"         # verified live 2026-07-30: PreToolUse hook execution record
+      codex: []                     # arm does not exist on codex
   headroom:
     config_dir_suffix: "-headroom"
     # Headroom proxies the agent: the driver runs `headroom wrap <agent> -- <args>`.
     wrap: headroom
     extra_agent_args:
-      # Codex's WebSocket transport 403s against the Headroom proxy and retries 5x before
-      # falling back. TODO: verify this exact config key live — if it is wrong the run
-      # still completes over the HTTPS fallback, just slower.
+      # VERIFIED 2026-07-30: without this key codex retries ws:// 5x (403) before HTTPS
+      # fallback; with it, zero fallback noise.
       codex: ["-c", "features.responses_websocket=false"]
       claude: []
     activation_signatures:
-      claude: []                    # TODO
-      codex: []                     # TODO
+      claude:
+        - "\"headroom\""            # verified 2026-07-30: registers as MCP server (quoted = exact JSON string, not config-path substrings)
+      codex:
+        - "127.0.0.1:8787"          # verified 2026-07-30: headroom proxy endpoint in transport logs
 
 # Mechanism flags counted per run: lines of the log (claude session JSONL / codex stdout)
 # containing any of the substrings below. A flag with an empty list always reports 0.
@@ -71,7 +84,7 @@ log_flags:
     codex: ["rate limit", "Reconnecting"]
   ws_fallback:
     claude: []
-    codex: ["Falling back from WebSockets"]
+    codex: ["Falling back from WebSockets"]   # verified live 2026-07-30 (forced 403 trigger)
 
 # Reasoning effort → CLI args / env, per agent. Both levels are empty placeholders:
 # MAX_THINKING_TOKENS is NOT the mechanism.
