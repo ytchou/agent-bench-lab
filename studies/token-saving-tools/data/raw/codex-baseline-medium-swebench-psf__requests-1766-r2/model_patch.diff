@@ -1,0 +1,36 @@
+diff --git a/requests/auth.py b/requests/auth.py
+index a3de123..48416e5 100644
+--- a/requests/auth.py
++++ b/requests/auth.py
+@@ -144,7 +144,7 @@ class HTTPDigestAuth(AuthBase):
+         if entdig:
+             base += ', digest="%s"' % entdig
+         if qop:
+-            base += ', qop=auth, nc=%s, cnonce="%s"' % (ncvalue, cnonce)
++            base += ', qop="auth", nc=%s, cnonce="%s"' % (ncvalue, cnonce)
+ 
+         return 'Digest %s' % (base)
+ 
+diff --git a/test_requests.py b/test_requests.py
+index 3b67395..c810e59 100755
+--- a/test_requests.py
++++ b/test_requests.py
+@@ -320,6 +320,18 @@ class RequestsTestCase(unittest.TestCase):
+         r = s.get(url)
+         assert r.status_code == 401
+ 
++    def test_DIGESTAUTH_QUOTES_QOP_VALUE(self):
++
++        auth = HTTPDigestAuth('user', 'pass')
++        auth.chal = {
++            'realm': 'testrealm@host.com',
++            'nonce': 'dcd98b7102dd2f0e8b11d0f600bfb0c093',
++            'qop': 'auth',
++        }
++
++        header = auth.build_digest_header('GET', '/dir/index.html')
++        assert 'qop="auth"' in header
++
+     def test_POSTBIN_GET_POST_FILES(self):
+ 
+         url = httpbin('post')

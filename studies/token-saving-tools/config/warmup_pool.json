@@ -1,0 +1,17 @@
+{
+  "description": "Step-1 warm-up pool (to-do 1.0a/1.1). Disjoint from the step-0 gate tasks so no gate row is superseded. Decisions 2026-07-30: 3 comp + 3 DS + 4 SWE, baseline arm, medium effort, k=2 repeats, phase=warmup.",
+  "arm": "baseline",
+  "effort": "medium",
+  "reps": [1, 2],
+  "agents": ["claude", "codex"],
+  "families": {
+    "comprehension": ["q04", "q05", "q09"],
+    "dsbench": ["00000005-q28", "00000010-q13", "00000019-q14"],
+    "swebench": [
+      "psf__requests-1766",
+      "django__django-11141",
+      "scikit-learn__scikit-learn-10844",
+      "sympy__sympy-12096"
+    ]
+  }
+}

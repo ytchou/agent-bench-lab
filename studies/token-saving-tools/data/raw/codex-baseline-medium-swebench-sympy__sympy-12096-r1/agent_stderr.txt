@@ -1,0 +1,10 @@
+warning: `--full-auto` is deprecated; use `--sandbox workspace-write` instead.
+Reading additional input from stdin...
+2026-07-30T04:55:18.603149Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /Users/ytchou/project/agent-bench-lab/sandbox/workspaces/codex-baseline-medium-swebench-sympy__sympy-12096-r1/sympy/utilities/tests/test_lambdify.py:
+def test_issue_2790():
+    assert lambdify((x, (y, (w, z))), w + x + y + z)(1, (2, (3, 4))) == 10
+    assert lambdify(x, x + 1, dummify=False)(1) == 2
+
+
+def test_ITE():
+    assert lambdify((x, y, z), ITE(x, y, z))(True, 5, 3) == 5

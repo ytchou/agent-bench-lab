@@ -1,0 +1,67 @@
+2026-07-30 13:53:39,596 - INFO - Creating container for scikit-learn__scikit-learn-10844...
+2026-07-30 13:53:42,681 - INFO - Container for scikit-learn__scikit-learn-10844 created: 1d4a5bbcd9052a65a939a5eb1d562a376282c95f4f32b2bc2e0c174f3f593323
+2026-07-30 13:53:44,179 - INFO - Container for scikit-learn__scikit-learn-10844 started: 1d4a5bbcd9052a65a939a5eb1d562a376282c95f4f32b2bc2e0c174f3f593323
+2026-07-30 13:53:44,189 - INFO - Intermediate patch for scikit-learn__scikit-learn-10844 written to logs/run_evaluation/codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2/agent-bench-lab/scikit-learn__scikit-learn-10844/patch.diff, now applying to container...
+2026-07-30 13:53:44,615 - INFO - >>>>> Applied Patch:
+Checking patch sklearn/metrics/cluster/supervised.py...
+Checking patch sklearn/metrics/cluster/tests/test_supervised.py...
+Applied patch sklearn/metrics/cluster/supervised.py cleanly.
+Applied patch sklearn/metrics/cluster/tests/test_supervised.py cleanly.
+
+2026-07-30 13:53:45,323 - INFO - Git diff before:
+diff --git a/sklearn/metrics/cluster/supervised.py b/sklearn/metrics/cluster/supervised.py
+index a987778ae..9bcca75a2 100644
+--- a/sklearn/metrics/cluster/supervised.py
++++ b/sklearn/metrics/cluster/supervised.py
+@@ -856,7 +856,7 @@ def fowlkes_mallows_score(labels_true, labels_pred, sparse=False):
+     tk = np.dot(c.data, c.data) - n_samples
+     pk = np.sum(np.asarray(c.sum(axis=0)).ravel() ** 2) - n_samples
+     qk = np.sum(np.asarray(c.sum(axis=1)).ravel() ** 2) - n_samples
+-    return tk / np.sqrt(pk * qk) if tk != 0. else 0.
++    return np.sqrt(tk / pk) * np.sqrt(tk / qk) if tk != 0. else 0.
+ 
+ 
+ def entropy(labels):
+diff --git a/sklearn/metrics/cluster/tests/test_supervised.py b/sklearn/metrics/cluster/tests/test_supervised.py
+index 8da03d1e1..5b842586e 100644
+--- a/sklearn/metrics/cluster/tests/test_supervised.py
++++ b/sklearn/metrics/cluster/tests/test_supervised.py
+@@ -253,6 +253,12 @@ def test_fowlkes_mallows_score():
+     assert_almost_equal(worst_score, 0.)
+ 
+ 
++def test_fowlkes_mallows_score_overflow():
++    # The product of the pair counts overflows an int64.
++    labels = np.zeros(90000, dtype=np.int)
++    assert_almost_equal(fowlkes_mallows_score(labels, labels), 1.)
++
++
+ def test_fowlkes_mallows_score_properties():
+     # handcrafted example
+     labels_a = np.array([0, 0, 0, 1, 1, 2])
+2026-07-30 13:53:45,325 - INFO - Eval script for scikit-learn__scikit-learn-10844 written to logs/run_evaluation/codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2/agent-bench-lab/scikit-learn__scikit-learn-10844/eval.sh; copying to container...
+2026-07-30 13:53:57,780 - INFO - Test runtime: 12.29 seconds
+2026-07-30 13:53:57,789 - INFO - Test output for scikit-learn__scikit-learn-10844 written to logs/run_evaluation/codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2/agent-bench-lab/scikit-learn__scikit-learn-10844/test_output.txt
+2026-07-30 13:53:58,150 - INFO - Git diff after:
+diff --git a/sklearn/metrics/cluster/supervised.py b/sklearn/metrics/cluster/supervised.py
+index a987778ae..9bcca75a2 100644
+--- a/sklearn/metrics/cluster/supervised.py
++++ b/sklearn/metrics/cluster/supervised.py
+@@ -856,7 +856,7 @@ def fowlkes_mallows_score(labels_true, labels_pred, sparse=False):
+     tk = np.dot(c.data, c.data) - n_samples
+     pk = np.sum(np.asarray(c.sum(axis=0)).ravel() ** 2) - n_samples
+     qk = np.sum(np.asarray(c.sum(axis=1)).ravel() ** 2) - n_samples
+-    return tk / np.sqrt(pk * qk) if tk != 0. else 0.
++    return np.sqrt(tk / pk) * np.sqrt(tk / qk) if tk != 0. else 0.
+ 
+ 
+ def entropy(labels):
+2026-07-30 13:53:58,150 - INFO - Git diff changed after running eval script
+2026-07-30 13:53:58,150 - INFO - Grading answer for scikit-learn__scikit-learn-10844...
+2026-07-30 13:53:58,331 - INFO - report: {'scikit-learn__scikit-learn-10844': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': True, 'tests_status': {'FAIL_TO_PASS': {'success': ['sklearn/metrics/cluster/tests/test_supervised.py::test_int_overflow_mutual_info_fowlkes_mallows_score'], 'failure': []}, 'PASS_TO_PASS': {'success': ['sklearn/metrics/cluster/tests/test_supervised.py::test_error_messages_on_wrong_input', 'sklearn/metrics/cluster/tests/test_supervised.py::test_perfect_matches', 'sklearn/metrics/cluster/tests/test_supervised.py::test_homogeneous_but_not_complete_labeling', 'sklearn/metrics/cluster/tests/test_supervised.py::test_complete_but_not_homogeneous_labeling', 'sklearn/metrics/cluster/tests/test_supervised.py::test_not_complete_and_not_homogeneous_labeling', 'sklearn/metrics/cluster/tests/test_supervised.py::test_non_consicutive_labels', 'sklearn/metrics/cluster/tests/test_supervised.py::test_adjustment_for_chance', 'sklearn/metrics/cluster/tests/test_supervised.py::test_adjusted_mutual_info_score', 'sklearn/metrics/cluster/tests/test_supervised.py::test_expected_mutual_info_overflow', 'sklearn/metrics/cluster/tests/test_supervised.py::test_entropy', 'sklearn/metrics/cluster/tests/test_supervised.py::test_contingency_matrix', 'sklearn/metrics/cluster/tests/test_supervised.py::test_contingency_matrix_sparse', 'sklearn/metrics/cluster/tests/test_supervised.py::test_exactly_zero_info_score', 'sklearn/metrics/cluster/tests/test_supervised.py::test_v_measure_and_mutual_information', 'sklearn/metrics/cluster/tests/test_supervised.py::test_fowlkes_mallows_score', 'sklearn/metrics/cluster/tests/test_supervised.py::test_fowlkes_mallows_score_properties'], 'failure': []}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for scikit-learn__scikit-learn-10844: resolved: True
+2026-07-30 13:53:58,364 - INFO - Attempting to stop container sweb.eval.scikit-learn__scikit-learn-10844.codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2...
+2026-07-30 13:54:13,703 - INFO - Attempting to remove container sweb.eval.scikit-learn__scikit-learn-10844.codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2...
+2026-07-30 13:54:13,769 - INFO - Container sweb.eval.scikit-learn__scikit-learn-10844.codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2 removed.
+2026-07-30 13:54:13,771 - INFO - Attempting to remove image swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10844:latest...
+2026-07-30 13:54:15,616 - INFO - Image swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10844:latest removed.

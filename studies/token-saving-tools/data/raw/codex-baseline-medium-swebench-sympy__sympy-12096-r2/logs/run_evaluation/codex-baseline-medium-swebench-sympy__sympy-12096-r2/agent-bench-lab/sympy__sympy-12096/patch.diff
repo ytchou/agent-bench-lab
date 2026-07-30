@@ -1,0 +1,26 @@
+diff --git a/sympy/core/function.py b/sympy/core/function.py
+index 1b8005e..e75e7ea 100644
+--- a/sympy/core/function.py
++++ b/sympy/core/function.py
+@@ -507,7 +507,8 @@ def _eval_evalf(self, prec):
+             func = getattr(mpmath, fname)
+         except (AttributeError, KeyError):
+             try:
+-                return Float(self._imp_(*self.args), prec)
++                return Float(self._imp_(
++                    *[arg.evalf(prec) for arg in self.args]), prec)
+             except (AttributeError, TypeError, ValueError):
+                 return
+ 
+diff --git a/sympy/core/tests/test_evalf.py b/sympy/core/tests/test_evalf.py
+index 1d63f9e..36a0cf8 100644
+--- a/sympy/core/tests/test_evalf.py
++++ b/sympy/core/tests/test_evalf.py
+@@ -324,6 +324,7 @@ def test_implemented_function_evalf():
+     assert str(f(x)) == "f(x)"
+     assert str(f(2)) == "f(2)"
+     assert f(2).evalf() == 3
++    assert f(f(2)).evalf() == 4
+     assert f(x).evalf() == f(x)
+     del f._imp_     # XXX: due to caching _imp_ would influence all other tests
+ 

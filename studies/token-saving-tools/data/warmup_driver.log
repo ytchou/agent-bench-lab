@@ -1,0 +1,81 @@
+2026-07-30T11:48:43 [1/40] RUN attempt 1 claude-baseline-medium-comprehension-q04-r1
+2026-07-30T11:48:59 [1/40] OK claude-baseline-medium-comprehension-q04-r1
+2026-07-30T11:48:59 [2/40] RUN attempt 1 codex-baseline-medium-comprehension-q04-r1
+2026-07-30T11:49:28 [2/40] OK codex-baseline-medium-comprehension-q04-r1
+2026-07-30T11:49:28 [3/40] RUN attempt 1 claude-baseline-medium-comprehension-q05-r1
+2026-07-30T11:49:52 [3/40] OK claude-baseline-medium-comprehension-q05-r1
+2026-07-30T11:49:52 [4/40] RUN attempt 1 codex-baseline-medium-comprehension-q05-r1
+2026-07-30T11:50:46 [4/40] OK codex-baseline-medium-comprehension-q05-r1
+2026-07-30T11:50:46 [5/40] RUN attempt 1 claude-baseline-medium-comprehension-q09-r1
+2026-07-30T11:51:07 [5/40] OK claude-baseline-medium-comprehension-q09-r1
+2026-07-30T11:51:07 [6/40] RUN attempt 1 codex-baseline-medium-comprehension-q09-r1
+2026-07-30T11:51:35 [6/40] OK codex-baseline-medium-comprehension-q09-r1
+2026-07-30T11:51:35 [7/40] RUN attempt 1 claude-baseline-medium-dsbench-00000005-q28-r1
+2026-07-30T11:52:27 [7/40] OK claude-baseline-medium-dsbench-00000005-q28-r1
+2026-07-30T11:52:27 [8/40] RUN attempt 1 codex-baseline-medium-dsbench-00000005-q28-r1
+2026-07-30T11:54:23 [8/40] OK codex-baseline-medium-dsbench-00000005-q28-r1
+2026-07-30T11:54:23 [9/40] RUN attempt 1 claude-baseline-medium-dsbench-00000010-q13-r1
+2026-07-30T11:55:36 [9/40] OK claude-baseline-medium-dsbench-00000010-q13-r1
+2026-07-30T11:55:36 [10/40] RUN attempt 1 codex-baseline-medium-dsbench-00000010-q13-r1
+2026-07-30T11:57:24 [10/40] OK codex-baseline-medium-dsbench-00000010-q13-r1
+2026-07-30T11:57:24 [11/40] RUN attempt 1 claude-baseline-medium-dsbench-00000019-q14-r1
+2026-07-30T11:57:54 [11/40] OK claude-baseline-medium-dsbench-00000019-q14-r1
+2026-07-30T11:57:54 [12/40] RUN attempt 1 codex-baseline-medium-dsbench-00000019-q14-r1
+2026-07-30T11:58:58 [12/40] OK codex-baseline-medium-dsbench-00000019-q14-r1
+2026-07-30T11:58:58 [13/40] RUN attempt 1 claude-baseline-medium-swebench-psf__requests-1766-r1
+2026-07-30T12:06:20 [13/40] OK claude-baseline-medium-swebench-psf__requests-1766-r1
+2026-07-30T12:06:20 [14/40] RUN attempt 1 codex-baseline-medium-swebench-psf__requests-1766-r1
+2026-07-30T12:13:40 [14/40] OK codex-baseline-medium-swebench-psf__requests-1766-r1
+2026-07-30T12:13:40 [15/40] RUN attempt 1 claude-baseline-medium-swebench-django__django-11141-r1
+2026-07-30T12:21:42 [15/40] OK claude-baseline-medium-swebench-django__django-11141-r1
+2026-07-30T12:21:42 [16/40] RUN attempt 1 codex-baseline-medium-swebench-django__django-11141-r1
+2026-07-30T12:32:36 [16/40] OK codex-baseline-medium-swebench-django__django-11141-r1
+2026-07-30T12:32:36 [17/40] RUN attempt 1 claude-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1
+2026-07-30T12:39:52 [17/40] OK claude-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1
+2026-07-30T12:39:52 [18/40] RUN attempt 1 codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1
+2026-07-30T12:48:47 [18/40] OK codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1
+2026-07-30T12:48:47 [19/40] RUN attempt 1 claude-baseline-medium-swebench-sympy__sympy-12096-r1
+2026-07-30T12:53:21 [19/40] OK claude-baseline-medium-swebench-sympy__sympy-12096-r1
+2026-07-30T12:53:21 [20/40] RUN attempt 1 codex-baseline-medium-swebench-sympy__sympy-12096-r1
+2026-07-30T12:59:02 [20/40] OK codex-baseline-medium-swebench-sympy__sympy-12096-r1
+2026-07-30T12:59:02 [21/40] RUN attempt 1 claude-baseline-medium-comprehension-q04-r2
+2026-07-30T12:59:22 [21/40] OK claude-baseline-medium-comprehension-q04-r2
+2026-07-30T12:59:22 [22/40] RUN attempt 1 codex-baseline-medium-comprehension-q04-r2
+2026-07-30T12:59:44 [22/40] OK codex-baseline-medium-comprehension-q04-r2
+2026-07-30T12:59:44 [23/40] RUN attempt 1 claude-baseline-medium-comprehension-q05-r2
+2026-07-30T13:00:01 [23/40] OK claude-baseline-medium-comprehension-q05-r2
+2026-07-30T13:00:01 [24/40] RUN attempt 1 codex-baseline-medium-comprehension-q05-r2
+2026-07-30T13:00:37 [24/40] OK codex-baseline-medium-comprehension-q05-r2
+2026-07-30T13:00:37 [25/40] RUN attempt 1 claude-baseline-medium-comprehension-q09-r2
+2026-07-30T13:00:57 [25/40] OK claude-baseline-medium-comprehension-q09-r2
+2026-07-30T13:00:57 [26/40] RUN attempt 1 codex-baseline-medium-comprehension-q09-r2
+2026-07-30T13:01:41 [26/40] OK codex-baseline-medium-comprehension-q09-r2
+2026-07-30T13:01:41 [27/40] RUN attempt 1 claude-baseline-medium-dsbench-00000005-q28-r2
+2026-07-30T13:02:30 [27/40] OK claude-baseline-medium-dsbench-00000005-q28-r2
+2026-07-30T13:02:30 [28/40] RUN attempt 1 codex-baseline-medium-dsbench-00000005-q28-r2
+2026-07-30T13:04:12 [28/40] OK codex-baseline-medium-dsbench-00000005-q28-r2
+2026-07-30T13:04:12 [29/40] RUN attempt 1 claude-baseline-medium-dsbench-00000010-q13-r2
+2026-07-30T13:05:17 [29/40] OK claude-baseline-medium-dsbench-00000010-q13-r2
+2026-07-30T13:05:17 [30/40] RUN attempt 1 codex-baseline-medium-dsbench-00000010-q13-r2
+2026-07-30T13:06:56 [30/40] OK codex-baseline-medium-dsbench-00000010-q13-r2
+2026-07-30T13:06:56 [31/40] RUN attempt 1 claude-baseline-medium-dsbench-00000019-q14-r2
+2026-07-30T13:07:25 [31/40] OK claude-baseline-medium-dsbench-00000019-q14-r2
+2026-07-30T13:07:25 [32/40] RUN attempt 1 codex-baseline-medium-dsbench-00000019-q14-r2
+2026-07-30T13:08:30 [32/40] OK codex-baseline-medium-dsbench-00000019-q14-r2
+2026-07-30T13:08:30 [33/40] RUN attempt 1 claude-baseline-medium-swebench-psf__requests-1766-r2
+2026-07-30T13:15:54 [33/40] OK claude-baseline-medium-swebench-psf__requests-1766-r2
+2026-07-30T13:15:54 [34/40] RUN attempt 1 codex-baseline-medium-swebench-psf__requests-1766-r2
+2026-07-30T13:22:16 [34/40] OK codex-baseline-medium-swebench-psf__requests-1766-r2
+2026-07-30T13:22:16 [35/40] RUN attempt 1 claude-baseline-medium-swebench-django__django-11141-r2
+2026-07-30T13:29:18 [35/40] OK claude-baseline-medium-swebench-django__django-11141-r2
+2026-07-30T13:29:18 [36/40] RUN attempt 1 codex-baseline-medium-swebench-django__django-11141-r2
+2026-07-30T13:37:19 [36/40] OK codex-baseline-medium-swebench-django__django-11141-r2
+2026-07-30T13:37:19 [37/40] RUN attempt 1 claude-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2
+2026-07-30T13:44:15 [37/40] OK claude-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2
+2026-07-30T13:44:15 [38/40] RUN attempt 1 codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2
+2026-07-30T13:54:19 [38/40] OK codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r2
+2026-07-30T13:54:19 [39/40] RUN attempt 1 claude-baseline-medium-swebench-sympy__sympy-12096-r2
+2026-07-30T13:58:55 [39/40] OK claude-baseline-medium-swebench-sympy__sympy-12096-r2
+2026-07-30T13:58:55 [40/40] RUN attempt 1 codex-baseline-medium-swebench-sympy__sympy-12096-r2
+2026-07-30T14:08:40 [40/40] OK codex-baseline-medium-swebench-sympy__sympy-12096-r2
+2026-07-30T14:08:40 DONE: 40/40 ok, failures: none

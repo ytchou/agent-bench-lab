@@ -1,0 +1,75 @@
+2026-07-30 13:28:11,571 - INFO - Creating container for django__django-11141...
+2026-07-30 13:28:14,738 - INFO - Container for django__django-11141 created: 4600b59553537b7290fdb9e359576e162123e760154a52028b591558663b339f
+2026-07-30 13:28:15,824 - INFO - Container for django__django-11141 started: 4600b59553537b7290fdb9e359576e162123e760154a52028b591558663b339f
+2026-07-30 13:28:15,837 - INFO - Intermediate patch for django__django-11141 written to logs/run_evaluation/claude-baseline-medium-swebench-django__django-11141-r2/agent-bench-lab/django__django-11141/patch.diff, now applying to container...
+2026-07-30 13:28:16,290 - INFO - >>>>> Applied Patch:
+Checking patch django/db/migrations/loader.py...
+Checking patch tests/migrations/test_loader.py...
+Applied patch django/db/migrations/loader.py cleanly.
+Applied patch tests/migrations/test_loader.py cleanly.
+
+2026-07-30 13:28:17,688 - INFO - Git diff before:
+diff --git a/django/db/migrations/loader.py b/django/db/migrations/loader.py
+index 8c308621d2..d075fcc5df 100644
+--- a/django/db/migrations/loader.py
++++ b/django/db/migrations/loader.py
+@@ -84,11 +84,6 @@ class MigrationLoader:
+                     continue
+                 raise
+             else:
+-                # Empty directories are namespaces.
+-                # getattr() needed on PY36 and older (replace w/attribute access).
+-                if getattr(module, '__file__', None) is None:
+-                    self.unmigrated_apps.add(app_config.label)
+-                    continue
+                 # Module is not a package (e.g. migrations.py).
+                 if not hasattr(module, '__path__'):
+                     self.unmigrated_apps.add(app_config.label)
+diff --git a/tests/migrations/test_loader.py b/tests/migrations/test_loader.py
+index 0f0a590e7c..a104884e06 100644
+--- a/tests/migrations/test_loader.py
++++ b/tests/migrations/test_loader.py
+@@ -189,14 +189,6 @@ class LoaderTests(TestCase):
+                 "App with migrations module file not in unmigrated apps."
+             )
+ 
+-    def test_load_empty_dir(self):
+-        with override_settings(MIGRATION_MODULES={"migrations": "migrations.faulty_migrations.namespace"}):
+-            loader = MigrationLoader(connection)
+-            self.assertIn(
+-                "migrations", loader.unmigrated_apps,
+-                "App missing __init__.py in migrations module not in unmigrated apps."
+-            )
+-
+     @override_settings(
+         INSTALLED_APPS=['migrations.migrations_test_apps.migrated_app'],
+     )
+2026-07-30 13:28:17,692 - INFO - Eval script for django__django-11141 written to logs/run_evaluation/claude-baseline-medium-swebench-django__django-11141-r2/agent-bench-lab/django__django-11141/eval.sh; copying to container...
+2026-07-30 13:28:45,908 - INFO - Test runtime: 28.06 seconds
+2026-07-30 13:28:45,939 - INFO - Test output for django__django-11141 written to logs/run_evaluation/claude-baseline-medium-swebench-django__django-11141-r2/agent-bench-lab/django__django-11141/test_output.txt
+2026-07-30 13:28:46,880 - INFO - Git diff after:
+diff --git a/django/db/migrations/loader.py b/django/db/migrations/loader.py
+index 8c308621d2..d075fcc5df 100644
+--- a/django/db/migrations/loader.py
++++ b/django/db/migrations/loader.py
+@@ -84,11 +84,6 @@ class MigrationLoader:
+                     continue
+                 raise
+             else:
+-                # Empty directories are namespaces.
+-                # getattr() needed on PY36 and older (replace w/attribute access).
+-                if getattr(module, '__file__', None) is None:
+-                    self.unmigrated_apps.add(app_config.label)
+-                    continue
+                 # Module is not a package (e.g. migrations.py).
+                 if not hasattr(module, '__path__'):
+                     self.unmigrated_apps.add(app_config.label)
+2026-07-30 13:28:46,881 - INFO - Git diff changed after running eval script
+2026-07-30 13:28:46,881 - INFO - Grading answer for django__django-11141...
+2026-07-30 13:28:46,986 - INFO - report: {'django__django-11141': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': False, 'tests_status': {'FAIL_TO_PASS': {'success': ['Migration directories without an __init__.py file are loaded.'], 'failure': []}, 'PASS_TO_PASS': {'success': ['test_apply (migrations.test_loader.RecorderTests)', 'test_invalid (migrations.test_loader.PycLoaderTests)', 'test_valid (migrations.test_loader.PycLoaderTests)', 'test_check_consistent_history (migrations.test_loader.LoaderTests)', 'test_check_consistent_history_squashed (migrations.test_loader.LoaderTests)', 'test_explicit_missing_module (migrations.test_loader.LoaderTests)', 'test_first (migrations.test_loader.LoaderTests)', "Files prefixed with underscore, tilde, or dot aren't loaded.", 'test_load (migrations.test_loader.LoaderTests)', 'test_load_import_error (migrations.test_loader.LoaderTests)', 'test_load_module_file (migrations.test_loader.LoaderTests)', 'test_load_unmigrated_dependency (migrations.test_loader.LoaderTests)', 'Tests loading a squashed migration', 'Tests loading a complex set of squashed migrations', 'test_loading_squashed_complex_multi_apps (migrations.test_loader.LoaderTests)', 'test_loading_squashed_complex_multi_apps_partially_applied (migrations.test_loader.LoaderTests)', 'Tests loading a complex but erroneous set of squashed migrations', 'Tests loading a squashed migration with a new migration referencing it', 'test_marked_as_migrated (migrations.test_loader.LoaderTests)', 'test_marked_as_unmigrated (migrations.test_loader.LoaderTests)', 'Tests prefix name matching', 'test_plan_handles_repeated_migrations (migrations.test_loader.LoaderTests)', 'test_run_before (migrations.test_loader.LoaderTests)'], 'failure': ['test_load_empty_dir (migrations.test_loader.LoaderTests)']}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for django__django-11141: resolved: False
+2026-07-30 13:28:47,032 - INFO - Attempting to stop container sweb.eval.django__django-11141.claude-baseline-medium-swebench-django__django-11141-r2...
+2026-07-30 13:29:05,232 - INFO - Attempting to remove container sweb.eval.django__django-11141.claude-baseline-medium-swebench-django__django-11141-r2...
+2026-07-30 13:29:05,664 - INFO - Container sweb.eval.django__django-11141.claude-baseline-medium-swebench-django__django-11141-r2 removed.
+2026-07-30 13:29:05,666 - INFO - Attempting to remove image swebench/sweb.eval.x86_64.django_1776_django-11141:latest...
+2026-07-30 13:29:09,519 - INFO - Image swebench/sweb.eval.x86_64.django_1776_django-11141:latest removed.
