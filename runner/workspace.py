@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import shutil
+import sys
 from pathlib import Path
 from typing import Any
 
 from runner.grading import get_adapter
 from runner.grading.base import GradeContext, git
+from runner.sandbox import enforce_preconditions
 from runner.spec import RunSpec, RunnerError, StudyConfig
 
 
@@ -36,11 +38,33 @@ def grade_context(spec: RunSpec, cfg: StudyConfig, timeout_s: int) -> GradeConte
     )
 
 
+def seed_workspace(spec: RunSpec, cfg: StudyConfig, workspace: Path) -> Path | None:
+    """Copy the arm's project-local install into the workspace; return the seed used, or None.
+
+    Always a real copy, never a symlink: the agent must see the tool as ordinary files it
+    could have installed itself, and a symlink would leak the frozen seed into edits.
+    """
+    seed = cfg.workspace_seed(spec.agent, spec.arm)
+    if seed is None:
+        return None
+    if not seed.is_dir():
+        raise RunnerError(
+            f"workspace seed for arm '{spec.arm}' on agent '{spec.agent}' is missing: "
+            f"{seed} — freeze the tool's project-local install there first; an unseeded "
+            f"run would silently measure the baseline under a treatment label"
+        )
+    shutil.copytree(seed, workspace, dirs_exist_ok=True, symlinks=False)
+    print(f"[seed] {spec.run_id}: {seed} -> {workspace}", file=sys.stderr)
+    return seed
+
+
 def prepare_workspace(
     spec: RunSpec, cfg: StudyConfig, task: dict[str, Any], force: bool = False
 ) -> Path:
-    """Create the workspace and let the family adapter materialize the task into it."""
+    """Create the workspace, materialize the task into it, then seed the arm's tool."""
     workspace = create_workspace(spec, cfg, force=force)
     ctx = grade_context(spec, cfg, timeout_s=cfg.git_timeout_s)
     get_adapter(spec.family).materialize(task, workspace, ctx)
+    enforce_preconditions(spec, cfg, workspace)
+    seed_workspace(spec, cfg, workspace)
     return workspace

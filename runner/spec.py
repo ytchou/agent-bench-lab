@@ -152,6 +152,16 @@ class StudyConfig:
         suffix = (self.arm_cfg(arm).get("config_dir_suffix") or "")
         return self._resolve(f"{base}{suffix}")
 
+    def workspace_seed(self, agent: str, arm: str) -> Path | None:
+        """Tree copied into every fresh workspace for this (agent, arm) cell, or None.
+
+        Some tools install project-locally rather than into the agent's config dir
+        (caveman/ponytail on Codex land as a `.agents/skills/` tree), so the arm's install
+        has to be re-laid into each workspace from a frozen seed.
+        """
+        seed = (self.arm_cfg(arm).get("workspace_seed") or {}).get(agent)
+        return self._resolve(str(seed)) if seed else None
+
     def effort_overrides(self, agent: str, effort: str) -> dict[str, Any]:
         """Return {'args': [...], 'env': {...}} for an effort level on one agent."""
         efforts = self.raw.get("efforts") or {}

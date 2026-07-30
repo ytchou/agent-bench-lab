@@ -13,6 +13,11 @@ swebench = [
     "swebench>=3.0",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
 [project.scripts]
 abl = "runner.cli:main"
 
@@ -22,3 +27,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["runner"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
