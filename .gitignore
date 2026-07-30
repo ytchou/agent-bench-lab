@@ -27,3 +27,6 @@ runs.sqlite
 
 # raw run archives keep their logs (audit trail beats the blanket *.log rule)
 !studies/*/data/**/*.log
+
+# linked worktrees (worktree-setup.md)
+.worktrees/

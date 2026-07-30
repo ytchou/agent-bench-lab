@@ -15,7 +15,7 @@
   "exit_code": 0,
   "status": "ok",
   "discard_reason": null,
-  "wall_s": 75.268,
-  "session_id": "7962539a-7fba-4ecc-865d-d419b7ed8349",
-  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-swebench-django--django-11141-r2/7962539a-7fba-4ecc-865d-d419b7ed8349.jsonl"
+  "wall_s": 78.702,
+  "session_id": "d6a413d2-73d1-47a9-8c88-57661eb705de",
+  "session_log": "/Users/ytchou/project/agent-bench-lab/sandbox/claude-config/projects/-Users-ytchou-project-agent-bench-lab-sandbox-workspaces-claude-baseline-medium-swebench-django--django-11141-r2/d6a413d2-73d1-47a9-8c88-57661eb705de.jsonl"
 }
