@@ -4,7 +4,7 @@
 
 ## 1. Design (frozen)
 
-- **Arms:** Claude Code — baseline, caveman, ponytail, rtk, Headroom (5). Codex CLI — baseline, caveman, ponytail, Headroom (4; rtk has no Codex support).
+- **Arms:** Claude Code — baseline, caveman, ponytail, rtk, Headroom (5). Codex CLI — baseline, caveman, ponytail, Headroom (4; rtk has no Codex support). *Amendment A1 (2026-07-30, pre-data, see `run-order.md`): rtk withdrawn — both agents run 4 arms; Holm family = 3 tools × 2 agents.*
 - **Efforts:** medium, xhigh — full factors on both agents.
 - **Families:** ~12 SWE-bench Verified, ~12 DSBench, ~10 comprehension (exact IDs frozen in the task manifests at the tag).
 - **Repeats (decision 1.8):** k=2 on all Codex cells; k=1 on Claude cells. *Flagged for the freeze (see §6): warm-up sterile data puts Claude-SWE rep noise at sigma 0.34 (from 4 pairs, one 2.5× divergent pair) — recommendation: extend k=2 to Claude SWE cells (+~120 runs) as variance insurance; final call is Patrick's at merge.*
