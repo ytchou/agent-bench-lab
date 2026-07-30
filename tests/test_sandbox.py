@@ -175,3 +175,14 @@ def test_enforce_preconditions_still_checks_the_workspace_for_a_treatment_arm(
         enforce_preconditions(_spec("claude", "caveman"), cfg, workspace)
 
     assert ".agents/skills" in str(excinfo.value)
+
+
+def test_codex_stock_catalog_is_not_an_installed_tool(tmp_path):
+    from runner.sandbox import installed_tools
+
+    home = tmp_path / "codex-home"
+    (home / "plugins" / "cache" / "openai-curated-remote" / "github").mkdir(parents=True)
+    assert installed_tools("codex", home) == []
+
+    (home / "plugins" / "cache" / "caveman").mkdir(parents=True)
+    assert installed_tools("codex", home) == ["caveman"]
