@@ -29,6 +29,11 @@ class SterilityError(RunnerError):
 SKILLS_TREE = ".agents/skills"
 """Project-local skill install (npx skills add) — must only exist in a workspace after seeding."""
 
+CODEX_STOCK_ARTIFACTS = {"openai-curated-remote"}
+"""Codex CLI's own curated remote-plugin catalog — self-populates in every CODEX_HOME
+(verified present in the sterile baseline that produced the clean warm-up runs), so it
+is part of the stock environment, not an installed tool."""
+
 
 def _child_names(path: Path) -> list[str]:
     """Visible child names of a directory ([] when absent); dotted entries are agent-owned."""
@@ -55,7 +60,7 @@ def _claude_plugins(config_dir: Path) -> list[str]:
 def _codex_tools(config_dir: Path) -> list[str]:
     """Tool artifacts installed into a CODEX_HOME (empty list = sterile)."""
     return sorted(
-        set(_child_names(config_dir / "plugins" / "cache"))
+        (set(_child_names(config_dir / "plugins" / "cache")) - CODEX_STOCK_ARTIFACTS)
         | set(_child_names(config_dir / "skills"))
     )
 
