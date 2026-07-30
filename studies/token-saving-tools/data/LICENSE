@@ -1,0 +1,10 @@
+The run data in this directory (runs.jsonl, superseded.jsonl, raw/ artifacts,
+logs) is licensed under Creative Commons Attribution 4.0 International
+(CC-BY-4.0): https://creativecommons.org/licenses/by/4.0/
+
+Attribution: Yung-Tang (Patrick) Chou, "Token-Saving Tools: A Pre-Registered
+Benchmark" (agent-bench-lab), 2026.
+
+Note: agent session logs may quote snippets of the benchmark task inputs
+(SWE-bench repositories, DSBench workbooks, pallets/click source), which
+retain their upstream licenses.
