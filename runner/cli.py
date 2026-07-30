@@ -1,5 +1,5 @@
 """CLI: `abl run` (one run end-to-end), `abl gate` (exit gate sweep), `abl regrade`,
-`abl export`, `abl db` (derived SQLite star schema)."""
+`abl export`, `abl db` (derived SQLite star schema), `abl arm-setup` (sandbox verification)."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from runner.grading import find_task, first_task_id, get_adapter, swebench
 from runner.grading.base import GradeContext
 from runner.prompts import build_prompt
 from runner.results import append_row, archive_run, build_row, export_csv, find_row, rewrite_row
+from runner.sandbox import check_all_arms
 from runner.spec import RunSpec, RunnerError, StudyConfig, load_study
 from runner.workspace import grade_context, prepare_workspace
 
@@ -32,6 +33,11 @@ _SUMMARY_COLUMNS = [
     ("tokens_out", 11),
     ("turns", 6),
     ("activated", 10),
+]
+_ARM_CHECK_COLUMNS = [
+    ("agent", 8),
+    ("arm", 12),
+    ("status", 6),
 ]
 
 
@@ -183,6 +189,31 @@ def cmd_regrade(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_arm_setup(args: argparse.Namespace) -> int:
+    """Verify every arm's sandbox prerequisites; installs nothing and changes nothing."""
+    cfg = load_study(args.study)
+    checks = check_all_arms(cfg)
+
+    header = "  ".join(name.ljust(width) for name, width in _ARM_CHECK_COLUMNS) + "  detail"
+    print(header)
+    print("-" * len(header))
+    for check in checks:
+        values = [check.agent, check.arm, "PASS" if check.ok else "FAIL"]
+        cells = [
+            value.ljust(width)[:width]
+            for value, (_, width) in zip(values, _ARM_CHECK_COLUMNS)
+        ]
+        print("  ".join(cells) + "  " + ("; ".join(check.problems) or "ok"))
+
+    failed = [check for check in checks if not check.ok]
+    if failed:
+        print(
+            f"{len(failed)} of {len(checks)} arm(s) failed verification", file=sys.stderr
+        )
+        return 1
+    return 0
+
+
 def cmd_export(args: argparse.Namespace) -> int:
     cfg = load_study(args.study)
     path = export_csv(cfg)
@@ -227,6 +258,18 @@ def build_parser() -> argparse.ArgumentParser:
     regrade.add_argument("--study", default=DEFAULT_STUDY)
     regrade.add_argument("--run-id", dest="run_id", required=True)
     regrade.set_defaults(func=cmd_regrade)
+
+    arm_setup = sub.add_parser(
+        "arm-setup", help="verify each arm's sandbox prerequisites (no installs)"
+    )
+    arm_setup.add_argument("--study", default=DEFAULT_STUDY)
+    arm_setup.add_argument(
+        "--verify",
+        action="store_true",
+        required=True,
+        help="check only; install automation is out of scope, so this flag is mandatory",
+    )
+    arm_setup.set_defaults(func=cmd_arm_setup)
 
     export = sub.add_parser("export", help="export runs.jsonl to runs.csv")
     export.add_argument("--study", default=DEFAULT_STUDY)
