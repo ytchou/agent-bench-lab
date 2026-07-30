@@ -1,0 +1,36 @@
+diff --git a/requests/auth.py b/requests/auth.py
+index a3de123..48416e5 100644
+--- a/requests/auth.py
++++ b/requests/auth.py
+@@ -144,7 +144,7 @@ class HTTPDigestAuth(AuthBase):
+         if entdig:
+             base += ', digest="%s"' % entdig
+         if qop:
+-            base += ', qop=auth, nc=%s, cnonce="%s"' % (ncvalue, cnonce)
++            base += ', qop="auth", nc=%s, cnonce="%s"' % (ncvalue, cnonce)
+ 
+         return 'Digest %s' % (base)
+ 
+diff --git a/test_requests.py b/test_requests.py
+index 3b67395..9069711 100755
+--- a/test_requests.py
++++ b/test_requests.py
+@@ -277,6 +277,18 @@ class RequestsTestCase(unittest.TestCase):
+         r = s.get(url)
+         assert r.status_code == 200
+ 
++    def test_DIGEST_AUTH_QUOTES_QOP(self):
++        auth = HTTPDigestAuth('user', 'pass')
++        auth.chal = {
++            'realm': 'testrealm',
++            'nonce': 'testnonce',
++            'qop': 'auth',
++        }
++
++        header = auth.build_digest_header('GET', 'http://example.com/')
++
++        assert 'qop="auth"' in header
++
+     def test_DIGEST_AUTH_RETURNS_COOKIE(self):
+         url = httpbin('digest-auth', 'auth', 'user', 'pass')
+         auth = HTTPDigestAuth('user', 'pass')

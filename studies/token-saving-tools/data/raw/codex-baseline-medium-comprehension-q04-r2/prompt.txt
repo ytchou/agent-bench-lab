@@ -1,0 +1,13 @@
+You are working non-interactively on a benchmark task.
+Rules:
+- Work only inside the current directory; do not touch anything outside it.
+- Do not ask questions and do not wait for confirmation; nobody will answer.
+- If the task asks for an answer file, write it before you finish.
+- When the task is complete, stop.
+
+The current directory contains a checked-out source repository.
+Answer this question about it:
+
+In HelpFormatter.__init__ (src/click/formatting.py), when max_width is passed as None it is replaced with a hard-coded integer. Answer with that integer only.
+
+Write your final answer into a file named ANSWER.txt in the root of the current directory. ANSWER.txt must contain ONLY the final answer — no explanation, no reasoning, no formatting, no code fences.

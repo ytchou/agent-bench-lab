@@ -1,0 +1,41 @@
+# ============================================================================
+# Simulated-cost price table. Units: USD per 1,000,000 tokens.
+# Retrieved: 2026-07-30
+#   Anthropic: claude-api reference (Opus 5 $5/$25, Haiku 4.5 $1/$5;
+#     cache write 1.25x base for 5m TTL, 2x for 1h TTL; cache read 0.1x base)
+#   OpenAI: GPT-5.6 pricing pages (Sol $5/$30; cached input $0.50;
+#     cache write $6.25; LONG-CONTEXT TIER: requests >272k input tokens bill
+#     the whole request at $10 input / $45 output)
+# Re-verify at pre-registration (to-do 2.4) and record the date again.
+#
+# Keys are the model ids as reported by the agent (Claude: `modelUsage` keys).
+# A model with no entry here yields cost_usd_simulated = null, never a silent 0.
+# ============================================================================
+
+[claude."claude-opus-5"]
+input = 5.0
+cache_write_5m = 6.25
+cache_write_1h = 10.0
+cache_read = 0.5
+output = 25.0
+
+# Haiku helper model observed in modelUsage during feasibility runs
+[claude."claude-haiku-4-5-20251001"]
+input = 1.0
+cache_write_5m = 1.25
+cache_write_1h = 2.0
+cache_read = 0.1
+output = 5.0
+
+[codex."gpt-5.6-sol"]
+input = 5.0
+cached_input = 0.5
+cache_write = 6.25
+output = 30.0
+# Long-context tier: if a request's input exceeds this threshold, the WHOLE
+# request bills at the long rates below. Codex usage is reported per run (sum
+# of turns), so v0 applies the tier on per-run input as an approximation —
+# ceiling: per-REQUEST tiering needs per-request usage, revisit before analysis.
+long_context_threshold_tokens = 272000
+input_long = 10.0
+output_long = 45.0

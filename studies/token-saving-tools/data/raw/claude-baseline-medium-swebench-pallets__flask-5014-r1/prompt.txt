@@ -1,0 +1,15 @@
+You are working non-interactively on a benchmark task.
+Rules:
+- Work only inside the current directory; do not touch anything outside it.
+- Do not ask questions and do not wait for confirmation; nobody will answer.
+- If the task asks for an answer file, write it before you finish.
+- When the task is complete, stop.
+
+The current directory is a source repository with an open issue:
+
+Require a non-empty name for Blueprints
+Things do not work correctly if a Blueprint is given an empty name (e.g. #4944).
+It would be helpful if a `ValueError` was raised when trying to do that.
+
+
+Fix the issue by modifying the repository in place. Do not write ANSWER.txt. Do not commit; leave your changes in the working tree.

@@ -1,0 +1,122 @@
+2026-07-30 12:48:14,957 - INFO - Creating container for scikit-learn__scikit-learn-10844...
+2026-07-30 12:48:16,994 - INFO - Container for scikit-learn__scikit-learn-10844 created: e5eaf59d5eb32933d803aacda05ede80932c94ec31207a0e900559d73076e099
+2026-07-30 12:48:17,951 - INFO - Container for scikit-learn__scikit-learn-10844 started: e5eaf59d5eb32933d803aacda05ede80932c94ec31207a0e900559d73076e099
+2026-07-30 12:48:17,960 - INFO - Intermediate patch for scikit-learn__scikit-learn-10844 written to logs/run_evaluation/codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1/agent-bench-lab/scikit-learn__scikit-learn-10844/patch.diff, now applying to container...
+2026-07-30 12:48:18,386 - INFO - >>>>> Applied Patch:
+Checking patch doc/whats_new/v0.20.rst...
+Checking patch sklearn/metrics/cluster/supervised.py...
+Checking patch sklearn/metrics/cluster/tests/test_supervised.py...
+Applied patch doc/whats_new/v0.20.rst cleanly.
+Applied patch sklearn/metrics/cluster/supervised.py cleanly.
+Applied patch sklearn/metrics/cluster/tests/test_supervised.py cleanly.
+
+2026-07-30 12:48:18,866 - INFO - Git diff before:
+diff --git a/doc/whats_new/v0.20.rst b/doc/whats_new/v0.20.rst
+index e71a8af0d..45009ef24 100644
+--- a/doc/whats_new/v0.20.rst
++++ b/doc/whats_new/v0.20.rst
+@@ -354,6 +354,12 @@ Metrics
+   :func:`mutual_info_score`.
+   :issue:`9772` by :user:`Kumar Ashutosh <thechargedneutron>`.
+ 
++- Fixed a bug in :func:`metrics.cluster.fowlkes_mallows_score` to avoid integer
++  overflow. Casted return value of `contingency_matrix` to `int64` and computed
++  product of square roots rather than square root of product.
++  :issue:`9515` by :user:`Alan Liddell <aliddell>` and
++  :user:`Manh Dao <manhdao>`.
++
+ Neighbors
+ 
+ - Fixed a bug so ``predict`` in :class:`neighbors.RadiusNeighborsRegressor` can
+diff --git a/sklearn/metrics/cluster/supervised.py b/sklearn/metrics/cluster/supervised.py
+index a987778ae..a33d0cb25 100644
+--- a/sklearn/metrics/cluster/supervised.py
++++ b/sklearn/metrics/cluster/supervised.py
+@@ -852,11 +852,12 @@ def fowlkes_mallows_score(labels_true, labels_pred, sparse=False):
+     labels_true, labels_pred = check_clusterings(labels_true, labels_pred)
+     n_samples, = labels_true.shape
+ 
+-    c = contingency_matrix(labels_true, labels_pred, sparse=True)
++    c = contingency_matrix(labels_true, labels_pred,
++                           sparse=True).astype(np.int64)
+     tk = np.dot(c.data, c.data) - n_samples
+     pk = np.sum(np.asarray(c.sum(axis=0)).ravel() ** 2) - n_samples
+     qk = np.sum(np.asarray(c.sum(axis=1)).ravel() ** 2) - n_samples
+-    return tk / np.sqrt(pk * qk) if tk != 0. else 0.
++    return np.sqrt(tk / pk) * np.sqrt(tk / qk) if tk != 0. else 0.
+ 
+ 
+ def entropy(labels):
+diff --git a/sklearn/metrics/cluster/tests/test_supervised.py b/sklearn/metrics/cluster/tests/test_supervised.py
+index 8da03d1e1..8be39cd22 100644
+--- a/sklearn/metrics/cluster/tests/test_supervised.py
++++ b/sklearn/metrics/cluster/tests/test_supervised.py
+@@ -173,15 +173,16 @@ def test_expected_mutual_info_overflow():
+     assert expected_mutual_information(np.array([[70000]]), 70000) <= 1
+ 
+ 
+-def test_int_overflow_mutual_info_score():
+-    # Test overflow in mutual_info_classif
++def test_int_overflow_mutual_info_fowlkes_mallows_score():
++    # Test overflow in mutual_info_classif and fowlkes_mallows_score
+     x = np.array([1] * (52632 + 2529) + [2] * (14660 + 793) + [3] * (3271 +
+                  204) + [4] * (814 + 39) + [5] * (316 + 20))
+     y = np.array([0] * 52632 + [1] * 2529 + [0] * 14660 + [1] * 793 +
+                  [0] * 3271 + [1] * 204 + [0] * 814 + [1] * 39 + [0] * 316 +
+                  [1] * 20)
+ 
+-    assert_all_finite(mutual_info_score(x.ravel(), y.ravel()))
++    assert_all_finite(mutual_info_score(x, y))
++    assert_all_finite(fowlkes_mallows_score(x, y))
+ 
+ 
+ def test_entropy():
+2026-07-30 12:48:18,869 - INFO - Eval script for scikit-learn__scikit-learn-10844 written to logs/run_evaluation/codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1/agent-bench-lab/scikit-learn__scikit-learn-10844/eval.sh; copying to container...
+2026-07-30 12:48:26,562 - INFO - Test runtime: 7.55 seconds
+2026-07-30 12:48:26,564 - INFO - Test output for scikit-learn__scikit-learn-10844 written to logs/run_evaluation/codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1/agent-bench-lab/scikit-learn__scikit-learn-10844/test_output.txt
+2026-07-30 12:48:26,735 - INFO - Git diff after:
+diff --git a/doc/whats_new/v0.20.rst b/doc/whats_new/v0.20.rst
+index e71a8af0d..45009ef24 100644
+--- a/doc/whats_new/v0.20.rst
++++ b/doc/whats_new/v0.20.rst
+@@ -354,6 +354,12 @@ Metrics
+   :func:`mutual_info_score`.
+   :issue:`9772` by :user:`Kumar Ashutosh <thechargedneutron>`.
+ 
++- Fixed a bug in :func:`metrics.cluster.fowlkes_mallows_score` to avoid integer
++  overflow. Casted return value of `contingency_matrix` to `int64` and computed
++  product of square roots rather than square root of product.
++  :issue:`9515` by :user:`Alan Liddell <aliddell>` and
++  :user:`Manh Dao <manhdao>`.
++
+ Neighbors
+ 
+ - Fixed a bug so ``predict`` in :class:`neighbors.RadiusNeighborsRegressor` can
+diff --git a/sklearn/metrics/cluster/supervised.py b/sklearn/metrics/cluster/supervised.py
+index a987778ae..a33d0cb25 100644
+--- a/sklearn/metrics/cluster/supervised.py
++++ b/sklearn/metrics/cluster/supervised.py
+@@ -852,11 +852,12 @@ def fowlkes_mallows_score(labels_true, labels_pred, sparse=False):
+     labels_true, labels_pred = check_clusterings(labels_true, labels_pred)
+     n_samples, = labels_true.shape
+ 
+-    c = contingency_matrix(labels_true, labels_pred, sparse=True)
++    c = contingency_matrix(labels_true, labels_pred,
++                           sparse=True).astype(np.int64)
+     tk = np.dot(c.data, c.data) - n_samples
+     pk = np.sum(np.asarray(c.sum(axis=0)).ravel() ** 2) - n_samples
+     qk = np.sum(np.asarray(c.sum(axis=1)).ravel() ** 2) - n_samples
+-    return tk / np.sqrt(pk * qk) if tk != 0. else 0.
++    return np.sqrt(tk / pk) * np.sqrt(tk / qk) if tk != 0. else 0.
+ 
+ 
+ def entropy(labels):
+2026-07-30 12:48:26,736 - INFO - Git diff changed after running eval script
+2026-07-30 12:48:26,736 - INFO - Grading answer for scikit-learn__scikit-learn-10844...
+2026-07-30 12:48:26,749 - INFO - report: {'scikit-learn__scikit-learn-10844': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': True, 'tests_status': {'FAIL_TO_PASS': {'success': ['sklearn/metrics/cluster/tests/test_supervised.py::test_int_overflow_mutual_info_fowlkes_mallows_score'], 'failure': []}, 'PASS_TO_PASS': {'success': ['sklearn/metrics/cluster/tests/test_supervised.py::test_error_messages_on_wrong_input', 'sklearn/metrics/cluster/tests/test_supervised.py::test_perfect_matches', 'sklearn/metrics/cluster/tests/test_supervised.py::test_homogeneous_but_not_complete_labeling', 'sklearn/metrics/cluster/tests/test_supervised.py::test_complete_but_not_homogeneous_labeling', 'sklearn/metrics/cluster/tests/test_supervised.py::test_not_complete_and_not_homogeneous_labeling', 'sklearn/metrics/cluster/tests/test_supervised.py::test_non_consicutive_labels', 'sklearn/metrics/cluster/tests/test_supervised.py::test_adjustment_for_chance', 'sklearn/metrics/cluster/tests/test_supervised.py::test_adjusted_mutual_info_score', 'sklearn/metrics/cluster/tests/test_supervised.py::test_expected_mutual_info_overflow', 'sklearn/metrics/cluster/tests/test_supervised.py::test_entropy', 'sklearn/metrics/cluster/tests/test_supervised.py::test_contingency_matrix', 'sklearn/metrics/cluster/tests/test_supervised.py::test_contingency_matrix_sparse', 'sklearn/metrics/cluster/tests/test_supervised.py::test_exactly_zero_info_score', 'sklearn/metrics/cluster/tests/test_supervised.py::test_v_measure_and_mutual_information', 'sklearn/metrics/cluster/tests/test_supervised.py::test_fowlkes_mallows_score', 'sklearn/metrics/cluster/tests/test_supervised.py::test_fowlkes_mallows_score_properties'], 'failure': []}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for scikit-learn__scikit-learn-10844: resolved: True
+2026-07-30 12:48:26,749 - INFO - Attempting to stop container sweb.eval.scikit-learn__scikit-learn-10844.codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1...
+2026-07-30 12:48:42,011 - INFO - Attempting to remove container sweb.eval.scikit-learn__scikit-learn-10844.codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1...
+2026-07-30 12:48:42,078 - INFO - Container sweb.eval.scikit-learn__scikit-learn-10844.codex-baseline-medium-swebench-scikit-learn__scikit-learn-10844-r1 removed.
+2026-07-30 12:48:42,079 - INFO - Attempting to remove image swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10844:latest...
+2026-07-30 12:48:43,493 - INFO - Image swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10844:latest removed.

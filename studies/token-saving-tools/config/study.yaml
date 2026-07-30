@@ -1,0 +1,113 @@
+# Study #1 — token-saving tools. Runner configuration (v0).
+# All relative paths resolve against the repo root.
+
+paths:
+  workspaces: sandbox/workspaces
+  data: studies/token-saving-tools/data
+  prices: config/prices.toml
+
+agents:
+  claude:
+    binary: claude
+    model: claude-opus-5            # pinned: the default inherits the user's [1m] variant
+    model_flag: --model
+    config_dir: sandbox/claude-config   # + the arm's suffix; never ~/.claude
+    extra_args: ["--permission-mode", "bypassPermissions"]
+    env: {}
+  codex:
+    binary: codex
+    model: gpt-5.6-sol              # CONFIRMED 2026-07-30: accepted by codex exec -m in live runs
+    model_flag: -m
+    config_dir: sandbox/codex-home      # + the arm's suffix; never ~/.codex
+    # --full-auto: workspace-write OS sandbox + no approval prompts. codex exec's
+    # default sandbox is read-only, which silently kills ANSWER.txt writes.
+    extra_args: ["--full-auto"]
+    env: {}
+
+# Each arm = one sterile config dir with exactly one tool installed.
+# Config dirs for treatment arms may not exist yet; the runner discards the run with a
+# clear "missing_config_dir" message instead of falling back to a personal config.
+arms:
+  baseline: {}                      # sterile config, no suffix, no tool
+  caveman:
+    config_dir_suffix: "-caveman"
+    activation_signatures:
+      claude:
+        - "CAVEMAN MODE ACTIVE"
+      codex: []                     # TODO: codex-side marker not identified yet
+  ponytail:
+    config_dir_suffix: "-ponytail"
+    activation_signatures:
+      claude:
+        - "Ponytail governs what you build"
+      codex: []                     # TODO
+  rtk:
+    config_dir_suffix: "-rtk"
+    activation_signatures:
+      claude: []                    # TODO: identify rtk's session-log signature
+      codex: []                     # TODO
+  headroom:
+    config_dir_suffix: "-headroom"
+    # Headroom proxies the agent: the driver runs `headroom wrap <agent> -- <args>`.
+    wrap: headroom
+    extra_agent_args:
+      # Codex's WebSocket transport 403s against the Headroom proxy and retries 5x before
+      # falling back. TODO: verify this exact config key live — if it is wrong the run
+      # still completes over the HTTPS fallback, just slower.
+      codex: ["-c", "features.responses_websocket=false"]
+      claude: []
+    activation_signatures:
+      claude: []                    # TODO
+      codex: []                     # TODO
+
+# Mechanism flags counted per run: lines of the log (claude session JSONL / codex stdout)
+# containing any of the substrings below. A flag with an empty list always reports 0.
+log_flags:
+  compaction:
+    claude: ["isCompactSummary", "compact_boundary"]   # TODO verify live
+    codex: []
+  rate_limited:
+    claude: ["rate_limit", "overloaded_error"]
+    codex: ["rate limit", "Reconnecting"]
+  ws_fallback:
+    claude: []
+    codex: ["Falling back from WebSockets"]
+
+# Reasoning effort → CLI args / env, per agent. Both levels are empty placeholders:
+# MAX_THINKING_TOKENS is NOT the mechanism.
+efforts:
+  medium:
+    claude:
+      args: ["--effort", "medium"]        # verified: claude --effort <level>
+      env: {}
+    codex:
+      args: ["-c", "model_reasoning_effort=\"medium\""]   # verified live 2026-07-30
+      env: {}
+  xhigh:
+    claude:
+      args: ["--effort", "xhigh"]
+      env: {}
+    codex:
+      args: ["-c", "model_reasoning_effort=\"xhigh\""]    # verified live 2026-07-30
+      env: {}
+
+families:
+  comprehension:
+    tasks: studies/token-saving-tools/tasks/comprehension.json
+  dsbench:
+    tasks: studies/token-saving-tools/tasks/dsbench.json
+  swebench:
+    tasks: studies/token-saving-tools/tasks/swebench.json
+
+timeouts:
+  agent_run_s: 1800
+  git_s: 900
+  grading_s: 3600
+
+# `abl gate` — step-0 exit gate: first task of each family × these agents.
+gate:
+  agents:
+    - claude
+    - codex
+  arm: baseline
+  effort: medium

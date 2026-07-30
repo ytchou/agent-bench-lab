@@ -1,0 +1,29 @@
+# deps / runtimes (runner language decided in step 0)
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# secrets & env
+.env
+.env.*
+
+# OS noise
+.DS_Store
+
+# scratch
+*.log
+tmp/
+
+# sandbox holds per-run agent configs incl. credentials — never commit
+sandbox/
+
+# benchmark data (non-commercial license): download-script only, never vendored
+studies/*/tasks/dsbench_data/
+
+# derived from runs.jsonl by `abl db` — rebuilt on demand, never committed
+runs.sqlite
+
+# raw run archives keep their logs (audit trail beats the blanket *.log rule)
+!studies/*/data/**/*.log
