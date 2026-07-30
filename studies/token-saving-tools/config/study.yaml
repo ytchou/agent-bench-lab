@@ -117,6 +117,46 @@ timeouts:
   git_s: 900
   grading_s: 3600
 
+# `abl campaign` — step-3 batch scheduler for the main experiment.
+# Added after the pre-registration freeze as a visible change (freeze.md allows this with
+# a stated reason): it encodes the run order already registered in docs/run-order.md and
+# amendment A1, and changes no part of the design — no arm, task, effort or replication
+# count here differs from what the frozen documents state.
+campaign:
+  phase: main
+  # Tier order (rule 1): every medium-effort run before any xhigh run.
+  efforts: [medium, xhigh]
+  # Slice order inside a tier (rule 2): the Claude slice is checkpoint 1a.
+  agents: [claude, codex]
+  # Amendment A1: rtk is withdrawn and is NOT scheduled; its arm block above is kept only
+  # as the record of the exclusion basis.
+  arms: [baseline, caveman, ponytail, headroom]
+  # Family order inside a slice; tasks keep their manifest order.
+  families: [comprehension, dsbench, swebench]
+  # Replication, amendment A2 (2026-07-30, pre-data, docs/run-order.md): uniform k=2 on
+  # every cell, both agents. Yields 2 agents x 4 arms x 2 tiers x 34 tasks x k=2 = 1,088 runs.
+  reps:
+    claude:
+      default: 2
+    codex:
+      default: 2
+  # Tasks already spent on the step-0 gate and the step-1 warm-up. Excluding them leaves
+  # the 34 fresh main-study tasks (10 comprehension / 12 DSBench / 12 SWE-bench) that
+  # freeze.md registers, without editing the frozen manifests.
+  exclude_tasks:
+    comprehension: [q01, q02, q04, q05, q09]
+    dsbench:
+      - "00000001-q17"
+      - "00000005-q28"
+      - "00000010-q13"
+      - "00000019-q14"
+    swebench:
+      - pallets__flask-5014
+      - psf__requests-1766
+      - django__django-11141
+      - scikit-learn__scikit-learn-10844
+      - sympy__sympy-12096
+
 # `abl gate` — step-0 exit gate: first task of each family × these agents.
 gate:
   agents:

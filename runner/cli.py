@@ -1,5 +1,6 @@
-"""CLI: `abl run` (one run end-to-end), `abl gate` (exit gate sweep), `abl regrade`,
-`abl export`, `abl db` (derived SQLite star schema), `abl arm-setup` (sandbox verification)."""
+"""CLI: `abl run` (one run end-to-end), `abl gate` (exit gate sweep), `abl campaign`
+(pre-registered batch scheduler), `abl regrade`, `abl export`, `abl db` (derived SQLite
+star schema), `abl arm-setup` (sandbox verification)."""
 
 from __future__ import annotations
 
@@ -13,6 +14,17 @@ from typing import Any
 from runner.accounting import extract_usage, load_prices, simulated_cost
 from runner.activation import detect_activation, scan_log_flags
 from runner.agents import run_agent
+from runner.campaign import (
+    campaign_config,
+    completed_run_ids,
+    format_batch_report,
+    format_status,
+    pending_cells,
+    plan_cells,
+    run_batch,
+    status_report,
+    take_cells,
+)
 from runner.channels import tool_output_bytes
 from runner.db import build_db
 from runner.grading import find_task, first_task_id, get_adapter, swebench
@@ -158,6 +170,48 @@ def cmd_gate(args: argparse.Namespace) -> int:
     return 0 if all(row.get("status") == "ok" for row in rows) else 1
 
 
+def cmd_campaign(args: argparse.Namespace) -> int:
+    """Main-experiment scheduler: report progress, or run the next batch in prereg order."""
+    cfg = load_study(args.study)
+    campaign = campaign_config(cfg)
+
+    if args.status:
+        print(format_status(status_report(cfg, campaign)))
+        return 0
+
+    cells = plan_cells(cfg, campaign)
+    outstanding = pending_cells(cells, completed_run_ids(cfg, campaign))
+    batch = take_cells(outstanding, args.max_runs)
+
+    if args.dry_run:
+        for cell in batch:
+            for spec in cell.specs:
+                print(spec.run_id)
+        pending_runs = sum(len(cell.specs) for cell in outstanding)
+        print(
+            f"{sum(len(cell.specs) for cell in batch)} run(s) in this batch; "
+            f"{pending_runs} pending of {sum(len(cell.specs) for cell in cells)}",
+            file=sys.stderr,
+        )
+        return 0
+
+    if not batch:
+        print("campaign complete — no runs left to schedule", file=sys.stderr)
+        return 0
+
+    report = run_batch(
+        cfg,
+        batch,
+        execute=execute_run,
+        campaign=campaign,
+        max_minutes=args.max_minutes,
+    )
+    print(format_batch_report(report))
+    if report.aborted_reason:
+        return 2
+    return 1 if report.exhausted else 0
+
+
 def cmd_regrade(args: argparse.Namespace) -> int:
     """Re-run only the grade step of a finished swebench run, from its archived predictions."""
     cfg = load_study(args.study)
@@ -251,6 +305,37 @@ def build_parser() -> argparse.ArgumentParser:
     gate.add_argument("--study", default=DEFAULT_STUDY)
     gate.add_argument("--force", action="store_true")
     gate.set_defaults(func=cmd_gate)
+
+    campaign = sub.add_parser(
+        "campaign", help="schedule the main experiment in the pre-registered run order"
+    )
+    campaign.add_argument("--study", default=DEFAULT_STUDY)
+    mode = campaign.add_mutually_exclusive_group(required=True)
+    mode.add_argument(
+        "--status", action="store_true", help="print plan vs. completed state and stop"
+    )
+    mode.add_argument("--run", action="store_true", help="execute the next batch")
+    mode.add_argument(
+        "--dry-run",
+        dest="dry_run",
+        action="store_true",
+        help="print the ordered run ids of the next batch without running anything",
+    )
+    campaign.add_argument(
+        "--max-runs",
+        dest="max_runs",
+        type=int,
+        default=None,
+        help="stop after the first task boundary at or past N runs",
+    )
+    campaign.add_argument(
+        "--max-minutes",
+        dest="max_minutes",
+        type=float,
+        default=None,
+        help="stop at the first task boundary after M minutes of wall time",
+    )
+    campaign.set_defaults(func=cmd_campaign)
 
     regrade = sub.add_parser(
         "regrade", help="re-grade one finished swebench run from its archived predictions"

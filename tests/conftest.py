@@ -65,6 +65,16 @@ def make_study(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Callable[...,
     return _make
 
 
+def make_tasks(root: Path, family: str, task_ids: list[str], id_field: str = "id") -> Path:
+    """Write a minimal task manifest for a family (ids only — scheduling never reads more)."""
+    path = root / "studies" / STUDY_NAME / "tasks" / f"{family}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps([{id_field: task_id} for task_id in task_ids]), encoding="utf-8"
+    )
+    return path
+
+
 def make_claude_config(root: Path, suffix: str = "", plugins: list[str] | None = None) -> Path:
     """Create a Claude config dir, optionally with plugins installed into it."""
     config_dir = root / "sandbox" / f"claude-config{suffix}"
