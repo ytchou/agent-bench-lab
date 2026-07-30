@@ -1,5 +1,10 @@
 # Pre-registered hypotheses
 
+> **Amendment A1 (2026-07-30, pre-data — see `run-order.md`):** the rtk arm is
+> withdrawn from the study (no Codex support; zero rtk runs existed at decision time).
+> H-RT-1..4 are untested, and H-HR-1's "outperforms rtk" clause is void. The frozen
+> text below is preserved unchanged.
+
 **Status: DRAFT — becomes immutable at the pre-registration tag (to-do 2.5).**
 Written 2026-07-30, before any treatment run. Every prediction below is falsifiable and graded in the final article exactly as stated; the analysis rules live in `analysis-plan.md`.
 
